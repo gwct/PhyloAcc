@@ -68,3 +68,7 @@ clean:
 	rm -f *.o *~ $(TARGET_ST)
 	rm -f *.o *~ $(TARGET_GT)
 # Command to remove all compiled files to make a clean install
+
+.PHONY: cpp-tests
+cpp-tests:
+	$(MAKE) -C tests/cpp
