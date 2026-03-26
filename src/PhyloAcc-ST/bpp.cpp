@@ -35,6 +35,7 @@
 #include "../PhyloAcc-common/bpp_mcmc.h"
 #include "../PhyloAcc-common/bpp_tree.h"
 #include "../PhyloAcc-common/bpp_likelihood.h"
+#include "../PhyloAcc-common/bpp_init.h"
 #include "bpp_c.hpp"
 
 
@@ -87,40 +88,8 @@ void BPP::InitPhyloTree(PhyloTree & tree) //, double indel_pi), double indel, do
 //    log_pi = log(pi);
     
     submat = tree.subs_rate;
-    children    = new int[N][2];
-    parent      = new int[N];
-    distances   = new double[N];
-  
-    
-    for(int s=0; s<N; s++)
-    {
-        distances[s] = tree.distances[s];
-        
-    }
-    
-    
-    
-    for(int i=0; i<N; i++)
-    {
-        children[i][0] = -1;
-        children[i][1] = -1;
-        parent[i] = -1;
-    }
-    
-    for(int i=0; i<N; i++)
-    {
-        int p = -1;
-        for(int j=0; j<N; j++)
-        {
-            if (tree.dag[i][j])
-            {
-                p++;
-                children[i][p] = j;
-                parent[j] = i;
-            }
-        }
-    }
-    
+    phyloacc::InitializeTreeArrays(tree, N, -1, children, parent, distances);
+
     
 //    distances[children[N-1][1]] += distances[children[N-1][0]];
 //    distances[children[N-1][0]] = 0;
