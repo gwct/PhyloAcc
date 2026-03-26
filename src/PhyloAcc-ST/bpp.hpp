@@ -26,9 +26,9 @@
 #include <sstream>
 #include <algorithm>
 
-#include "newick.h"
-#include "profile.h"
-#include "utils.h"
+#include "../PhyloAcc-common/newick.h"
+#include "../PhyloAcc-common/profile.h"
+#include "../PhyloAcc-common/utils.h"
 
 
 

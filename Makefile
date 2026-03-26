@@ -24,29 +24,36 @@ $(info $$GSL_LIB is [${GSL_LIB}])
 # GSL paths with the conda environment prefix
 
 CFLAGS=-Wall -g -O2 -std=c++14
-LDFLAGS=-lgsl -lm -lgslcblas -larmadillo -fopenmp
+LDFLAGS=-lgsl -lm -lgslcblas -larmadillo -fopenmp -Wl,-rpath,$(GSL_LIB)
 # Options for the g++ commands
 
 ############
 
+SRC_DIR_COMMON=src/PhyloAcc-common/
+SRCS_COMMON=$(SRC_DIR_COMMON)/*.cpp
+INCLUDES_COMMON=$(SRC_DIR_COMMON)/*.h
+COMMON_INCLUDE=-I$(SRC_DIR_COMMON)
+
 SRC_DIR_ST=src/$(TARGET_ST)/
-SRCS_ST=$(SRC_DIR_ST)/*.cpp
-INCLUDES_ST=$(SRC_DIR_ST)/*.h $(SRC_DIR_ST)/*.hpp
+SRCS_ST=$(filter-out $(SRC_DIR_ST)profile.cpp $(SRC_DIR_ST)newick.cpp $(SRC_DIR_ST)utils.cpp,$(wildcard $(SRC_DIR_ST)*.cpp)) $(SRCS_COMMON)
+INCLUDES_ST=$(SRC_DIR_ST)/*.h $(SRC_DIR_ST)/*.hpp $(INCLUDES_COMMON)
+ST_INCLUDE=-I$(SRC_DIR_ST)
 # Locations of files to compile
 
 $(TARGET_ST): $(SRCS_ST) $(INCLUDES_ST)
-	$(CXX) $(CFLAGS) -I$(GSL_INCLUDE) -L$(GSL_LIB) $(SRCS_ST) -o $(TARGET_ST) $(LDFLAGS)
+	$(CXX) $(CFLAGS) $(COMMON_INCLUDE) $(ST_INCLUDE) -I$(GSL_INCLUDE) -L$(GSL_LIB) $(SRCS_ST) -o $(TARGET_ST) $(LDFLAGS)
 # g++ commands for each file
 # Species tree version
 ############
 
 SRC_DIR_GT=src/$(TARGET_GT)/
-SRCS_GT=$(SRC_DIR_GT)/*.cpp
-INCLUDES_GT=$(SRC_DIR_GT)/*.h $(SRC_DIR_GT)/*.hpp
+SRCS_GT=$(filter-out $(SRC_DIR_GT)profile.cpp $(SRC_DIR_GT)newick.cpp $(SRC_DIR_GT)utils.cpp,$(wildcard $(SRC_DIR_GT)*.cpp)) $(SRCS_COMMON)
+INCLUDES_GT=$(SRC_DIR_GT)/*.h $(SRC_DIR_GT)/*.hpp $(INCLUDES_COMMON)
+GT_INCLUDE=-I$(SRC_DIR_GT)
 # Locations of files to compile
 
 $(TARGET_GT): $(SRCS_GT) $(INCLUDES_GT)
-	$(CXX) $(CFLAGS) -I$(GSL_INCLUDE) -L$(GSL_LIB) $(SRCS_GT) -o $(TARGET_GT) $(LDFLAGS)
+	$(CXX) $(CFLAGS) $(COMMON_INCLUDE) $(GT_INCLUDE) -I$(GSL_INCLUDE) -L$(GSL_LIB) $(SRCS_GT) -o $(TARGET_GT) $(LDFLAGS)
 # g++ commands for each file
 # Gene tree version
 ############

@@ -8,6 +8,7 @@ TESTS_DIR = ROOT / "tests"
 README_PATH = TESTS_DIR / "README.md"
 STATUS_PATH = TESTS_DIR / ".last_test_status.json"
 GT_GOLDEN = ROOT / "tests/golden/minimal/gt_rate_postZ_M0.txt"
+GT_GOLDEN_PROVENANCE = ROOT / "tests/golden/minimal/gt_rate_postZ_M0.provenance.md"
 
 MANIFEST = [
     {
@@ -291,6 +292,12 @@ def render_readme(data=None):
         "- Locations:",
         "  - `tests/golden/minimal/`",
         "  - `tests/golden/testdata/`",
+        "",
+        "GT Golden Provenance",
+        f"- Metadata file: `{GT_GOLDEN_PROVENANCE.relative_to(ROOT)}`",
+        "- `tests/golden/minimal/gt_rate_postZ_M0.txt` should be treated as a conda-forge/bioconda build baseline, not a generic local-compiler baseline.",
+        "- The documented matching build path is: `v2.4.5` source plus the conda-forge GCC 14 toolchain.",
+        "- Earlier local rebuilds done with the system `g++ 8.5` path did not reproduce this GT golden and should not be used for regression baselines.",
         "",
         "Environment Switches",
         "- `PHYLOACC_RUN_GT=1`: enable GT integration coverage",

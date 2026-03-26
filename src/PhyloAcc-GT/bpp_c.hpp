@@ -29,10 +29,10 @@
 #include <algorithm>
 #include <random>
 
-#include "newick.h"
-#include "profile.h"
+#include "../PhyloAcc-common/newick.h"
+#include "../PhyloAcc-common/profile.h"
 #include "bpp.hpp"
-#include "utils.h"
+#include "../PhyloAcc-common/utils.h"
 #include "genetree.hpp"
 
 
