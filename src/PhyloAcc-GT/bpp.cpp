@@ -33,6 +33,7 @@
 #include "../PhyloAcc-common/bpp_io.h"
 #include "../PhyloAcc-common/bpp_mcmc.h"
 #include "../PhyloAcc-common/bpp_tree.h"
+#include "../PhyloAcc-common/bpp_likelihood.h"
 #include "bpp_c.hpp"
 
 
@@ -189,59 +190,10 @@ mat BPP::getlogTM_len(double dist, mat& c_eigenvec, mat& c_eigenval, mat& c_eige
 
 double BPP::log_lik(vector< vector<vec> > & lambda, double _indel, double _indel2, int start1, int end1, vector<unsigned int> & v, double p)
 {
-    // compute loglik
-    double result =0;
-    mat x(2,2);
-
-    int rr = *subtree.rbegin();
-    // 1. sending the lambda msg from leaves bottom up through the network
-    for(vector<int>::iterator it = subtree.begin(); it!=subtree.end(); it++) //int s=S; s<N; s++)
-    {
-        int s = *it;
-        if(s<S) continue;
-        int* p = children[s];
-        for(int it = start1; it < end1; it++)  lambda[v[it]][s].fill(0);
-
-
-        for(int cc=0;cc<2;cc++)
-        {
-            int chi = p[cc];
-            assert(chi != -1);
-            if(distances[chi]>0 )
-            {
-                double tt = (1 - exp(-(_indel + _indel2) * distances[chi]))/(_indel + _indel2);
-                x.at(1,0) = _indel * tt;
-                x.at(0,0) = 1 - x.at(1,0);
-
-                x.at(0,1) = _indel2 * tt;
-                x.at(1,1) = 1 - x.at(0,1);
-
-                //cout << x;
-                x = log(x);
-
-
-            }
-            else{
-                x.fill(-INFINITY); //83, root
-                x.diag().fill(0);
-            }
-
-            #pragma omp parallel for schedule (guided)
-            for(int it = start1; it < end1; it++)  lambda[v[it]][s] +=  BPP::log_multi(x,lambda[v[it]][chi]);
-        }
-
-    }
-
-    // 2. processing the distribution of root species
-    for(int it = start1; it < end1; it++)
-    {
-
-        lambda[v[it]][rr][0] += log(1-p); //N-1
-        lambda[v[it]][rr][1] += log(p) ;
-        result += BPP::log_exp_sum(lambda[v[it]][rr]);
-    }
-
-    return(result);
+    return phyloacc::ComputeLogLikelihood(
+        lambda, _indel, _indel2, start1, end1, v, p, subtree, S, children, distances,
+        [](const mat& log_x, const vec& log_y) { return BPP::log_multi(log_x, log_y); },
+        [](const vec& log_y) { return BPP::log_exp_sum(log_y); });
 }
 
 void BPP::sample_hyperparam(int iter, vector<int> & ids, ofstream & output)
