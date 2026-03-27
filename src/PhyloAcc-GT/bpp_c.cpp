@@ -963,7 +963,6 @@ void BPP_C::getEmission(int len, BPP & bpp)
     {
         int ss = *it;
         int sp = bpp.parent[ss];
-        double height_ps = sp < N? bpp.heights[sp] : INFINITY;
         
         vector<double> emissions = vector<double>(3, 0); //
 
@@ -1176,7 +1175,6 @@ double BPP_C::sample_rate(int indictor, int iter, int max_iter, vector<int> lens
             }
             else cur_r = old_rate;
     }else{
-        int len = lens[indictor];
         vector<map<int, vector<mat>>> lambda_tmp = vector<map<int,vector<mat>>> (N, map<int,vector<mat>>()); // store orginial lambda
 
         for(int mm =0; mm<M;mm++)

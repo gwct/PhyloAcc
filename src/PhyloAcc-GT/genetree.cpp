@@ -1661,20 +1661,17 @@ bool GTree::Sample_BranchLen(double delta,int gnode, int indicator, BPP & bpp, v
     //double curGTPrior=priorTree(bpp);
     double c0_lens=heights_gene[gnode]-heights_gene[children_gene[gnode][0]]; 
     double c1_lens=heights_gene[gnode]-heights_gene[children_gene[gnode][1]];
-    int cid, cnode, sibnode;
-    double current_lens;
+    int cnode, sibnode;
     //sample the shorter branch, since both kid's branch length depends on the shorter branch. They move exactly the same amount if no topological change.
     if(c0_lens<c1_lens){ 
         //cid=0;
         cnode=children_gene[gnode][0];
         sibnode=children_gene[gnode][1];
-        current_lens=c0_lens;
         //sib_lens=c1_lens;
     }else{
         //cid=1;
         cnode=children_gene[gnode][1];
         sibnode=children_gene[gnode][0];
-        current_lens=c1_lens;
         //sib_lens=c0_lens;
     }
 

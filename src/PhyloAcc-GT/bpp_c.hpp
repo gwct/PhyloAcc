@@ -230,7 +230,6 @@ public:
         }
         
         GG_block = blocks; //ceil((double)GG/blocks);
-        int tot = ceil((double)(GG - 15)/GG_block);
         // if(tot>5) tot=5;
         // GG_block=ceil((double)GG/(tot));
 
