@@ -10,6 +10,8 @@
 #include "bpp.hpp"
 #include <gsl/gsl_errno.h>
 
+#include "../PhyloAcc-common/bpp_tree.h"
+
 //void BPP_C::getSubtree(int root, set<int>& child, vector<int> & visited_init)  // traverse from root, stop at children, 74 & 64; do include 1-S!
 //{
 //    
@@ -41,22 +43,9 @@
 
 
 
-void BPP_C::getSubtree(int root, vector<int> & visited_init)  // traverse from root to children, include root
+void BPP_C::getSubtree(int root, vector<int> & visited_init)
 {
-    
-    
-    int j = root;
-    
-    for(int chi=0;chi<2;chi++)
-    {
-        if(children2[j][chi]!=-1)
-            getSubtree(children2[j][chi], visited_init);
-        
-        
-    }
-    
-       visited_init.push_back(j);
-    
+    phyloacc::CollectSubtreeNodes(root, children2, visited_init);
 }
 
 
