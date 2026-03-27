@@ -2164,16 +2164,19 @@ bool GTree::Sample_tree2(int branch, int indicator, BPP & bpp, vector<int> & Z, 
     //bool miss_brsib=missing_gene[branchsib];
 
     //get lowheight under current config, for MH cal.
-    double curlowheight;
+    double curlowheight = 0.0;
+    bool found_curlowheight = false;
     int ss_p=ss; //ss_p where they meet
     while(ss_p <N){
         map<int, int>:: iterator it=parent_gene2[ss_p].find(branchsib);
         if(it != parent_gene2[ss_p].end()){
             curlowheight=max(bpp.heights[ss_p],max(heights_gene[branch],heights_gene[branchsib]));
+            found_curlowheight = true;
             break;
         }
         ss_p=bpp.parent[ss_p];
     } //ss_p is the first specie that branch and its current sib: branchsib can coalesce.
+    assert(found_curlowheight);
     
     //30Jun: to be consistent with brlen sampling, upper height in root: 10*mean time; if not root: should be grand-pa height.
     double curuppheight=branchpp<N ? heights_gene[branchpp] : curNHeight;
@@ -2421,17 +2424,20 @@ bool GTree::Sample_tree2(int branch, int indicator, BPP & bpp, vector<int> & Z, 
         uppheight=heights_gene[new_brpp];
     }
     //find the species that branch and new_sib can start coalesce. This is the lower bound for brp position
-    double lowheight;
+    double lowheight = 0.0;
+    bool found_lowheight = false;
     ss_p=ss;
     while(ss_p != bpp.parent[coal_gnode_sp[get_p]]){
         map<int, int>:: iterator it=parent_gene2[ss_p].find(new_sib);
         if(it !=parent_gene2[ss_p].end()){
             lowheight=max(heights_gene[branch],max(heights_gene[new_sib],bpp.heights[ss_p]));
+            found_lowheight = true;
             break;
         }else{
             ss_p=bpp.parent[ss_p];
         }
     }
+    assert(found_lowheight);
     double new_unif_len;
     double coal = gsl_rng_uniform(RNG);
     if (coal < 1e-5) coal = 1e-5;
