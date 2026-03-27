@@ -10,6 +10,7 @@
 #include "bpp.hpp"
 #include <gsl/gsl_errno.h>
 
+#include "../PhyloAcc-common/bpp_monitor.h"
 #include "../PhyloAcc-common/bpp_tree.h"
 #include "../PhyloAcc-common/bpp_update.h"
 #include "../PhyloAcc-common/bpp_transition.h"
@@ -824,24 +825,14 @@ void BPP_C::MonitorChain(int  m,int iter, int max_iter, BPP &bpp, double ind_pro
 //void BPP_C::MonitorChain(int  m, BPP &bpp, double ind_prop, const double add_loglik,const int resZ, bool recordtree, int lensC)  //Han*: Debug
 {
 
-
-    for(int s=0; s<N;s++)
-    {
-        trace_Z[m][s] = Z[s];
-    }
+    phyloacc::CopyTraceZ(m, N, Z, trace_Z);
 
    // P(X, M,  r, T|Z) = P(X, M |r, Z, T ) * P(r)  * P(T)
     // trace_loglik P(Y|r, Z, T)
    // add_loglik = P(T) * P(M | Z, T )
-   trace_full_loglik[m] = trace_loglik[m] + add_loglik ; //P(Y,Missing, Z, G| hyper etc)
-
-   trace_full_loglik[m] += log(gsl_ran_gamma_pdf(trace_c_rate[m],bpp.cprior_a,bpp.cprior_b)); //P(Y,Miss,Z,G,rc |rest)
-
-    if(resZ !=0)
-   {    //P(Y,Miss,Z,G,rc, rn |rest)
-        trace_full_loglik[m] += log(gsl_ran_gamma_pdf(trace_n_rate[m],bpp.nprior_a,bpp.nprior_b));
-
-    }
+    trace_full_loglik[m] = phyloacc::ComputeBaseFullLogLik(
+        trace_loglik[m], add_loglik, trace_c_rate[m], bpp.cprior_a, bpp.cprior_b,
+        resZ, trace_n_rate[m], bpp.nprior_a, bpp.nprior_b);
 
     //P(Y,Miss,Z,G,rc, rn, pi |rest)
     trace_full_loglik[m]+=log(gsl_ran_beta_pdf(2*trace_pi[m][0],prior_dir_param[0],prior_dir_param[1]));
@@ -922,12 +913,8 @@ void BPP_C::MonitorChain(int  m,int iter, int max_iter, BPP &bpp, double ind_pro
         }
     }
     
-    if(m>=new_burn && trace_full_loglik[m]>MaxLoglik)
+    if(phyloacc::UpdateMaxState(m, new_burn, trace_full_loglik[m], MaxLoglik, Max_Z, Max_m, Z))
     {
-        MaxLoglik = trace_full_loglik[m];
-      
-        Max_Z = Z;
-        Max_m = m;
         Max_pi=trace_pi[m];
             
         std::stringstream buffer;

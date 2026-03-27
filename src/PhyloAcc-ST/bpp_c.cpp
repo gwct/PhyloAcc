@@ -10,6 +10,7 @@
 #include "bpp.hpp"
 #include <gsl/gsl_errno.h>
 
+#include "../PhyloAcc-common/bpp_monitor.h"
 #include "../PhyloAcc-common/bpp_tree.h"
 #include "../PhyloAcc-common/bpp_update.h"
 #include "../PhyloAcc-common/bpp_transition.h"
@@ -627,11 +628,7 @@ void BPP_C::Update_Tg(int g, vector<bool> visited, BPP& bpp, bool tosample)  // 
 
 void BPP_C::MonitorChain(int  m, BPP &bpp, double & loglik, const double add_loglik,const int resZ)  //calculate P(X|Z, TM(r) ),
 {
-    for(int s=0; s<N;s++)
-    {
-        trace_Z[m][s] = Z[s];
-
-    }
+    phyloacc::CopyTraceZ(m, N, Z, trace_Z);
 
     if(m==0)
     {
@@ -652,53 +649,11 @@ void BPP_C::MonitorChain(int  m, BPP &bpp, double & loglik, const double add_log
     //double gain, loss;
     //log_f_Z(Z, log_TM_Int, gain, loss);
     
-    trace_full_loglik[m] = trace_loglik[m] + add_loglik ; // 0703 add prior of Z to eval2
-    
-    /*int status = gsl_ran_gamma_pdf(trace_c_rate[m],bpp.cprior_a,bpp.cprior_b);
-    if (status) {
-        if (status == GSL_EDOM) {
-            fprintf (stderr, "%d, invalid argument for conserved rate in computing loglik, %f\n", CC,trace_c_rate[m]);
-            cout << bpp.cprior_a << " " << bpp.cprior_b <<endl;
-        } else {
-            fprintf (stderr, "%d, failed in computing loglik, gsl_errno=%d\n",CC,
-                     status);
-        }
-        //m = num_burn+num_mcmc-1;
-        failure = 1;
-        return;
-    }*/
-    
-    trace_full_loglik[m] += log(gsl_ran_gamma_pdf(trace_c_rate[m],bpp.cprior_a,bpp.cprior_b));
-    
-    if(resZ !=0)
-    {
-        /*int status = gsl_ran_gamma_pdf(trace_n_rate[m],bpp.nprior_a,bpp.nprior_b);
-        if (status) {
-          if (status == GSL_EDOM) {
-            fprintf (stderr, "%d, invalid argument for accelerated rate in computing loglik, %f\n", CC,trace_n_rate[m]);
-        } else {
-            fprintf (stderr, "%d, failed in computing loglik, gsl_errno=%d\n",
-                     CC,status);
-        }
-        //m = num_burn+num_mcmc-1;
-        failure = 1;
-        return;
-        }*/
-        
-        trace_full_loglik[m] += log(gsl_ran_gamma_pdf(trace_n_rate[m],bpp.nprior_a,bpp.nprior_b));
-        
+    trace_full_loglik[m] = phyloacc::ComputeBaseFullLogLik(
+        trace_loglik[m], add_loglik, trace_c_rate[m], bpp.cprior_a, bpp.cprior_b,
+        resZ, trace_n_rate[m], bpp.nprior_a, bpp.nprior_b);
 
-    }
-    
-    
-    
-    
-    if(m>=num_burn && trace_full_loglik[m]>MaxLoglik)
-    {
-        MaxLoglik = trace_full_loglik[m];
-        Max_Z = Z;
-        Max_m = m;
-    }
+    phyloacc::UpdateMaxState(m, num_burn, trace_full_loglik[m], MaxLoglik, Max_Z, Max_m, Z);
     
     if(m%500==0 && verbose){ 
         cout <<CC <<": " << trace_loglik[m] <<", " << trace_full_loglik[m]<< ", " << trace_n_rate[m] << ", " << trace_c_rate[m] <<", " <<  prop_c <<", " << prop_n <<", ";
@@ -1480,4 +1435,3 @@ vector<int>  BPP_C::Move_Z(int & propConf, int & revConf, int & changeZ){
 
 
     
-
