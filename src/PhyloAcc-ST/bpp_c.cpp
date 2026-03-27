@@ -11,6 +11,7 @@
 #include <gsl/gsl_errno.h>
 
 #include "../PhyloAcc-common/bpp_tree.h"
+#include "../PhyloAcc-common/bpp_transition.h"
 
 //void BPP_C::getSubtree(int root, set<int>& child, vector<int> & visited_init)  // traverse from root, stop at children, 74 & 64; do include 1-S!
 //{
@@ -510,95 +511,10 @@ void BPP_C::Gibbs(int iter, BPP &bpp, ofstream & outZ, string output_path,string
 
 void BPP_C::sample_transition( double  & gr, double  & lr, double  & lr2)
 {
-    
-    mat nZ = zeros(3,3); // record number of Z transitions
-    for(vector<int>::iterator it = nodes.begin(); it < nodes.end() - 1; it++)
-    {
-        int p = parent2[*it];
-        //if(Z[p] < 2)
-        //{
-            nZ(Z[*it],Z[p]) += 1;
-        //}
-        
-        
-    }
-    
-    //cout << "Count matrix: " << nZ << endl;
-    gr = gsl_ran_beta(RNG, prior_g_a + nZ(1,0) + nZ(2,0) , prior_g_b + nZ(0,0)); // nZ(2, 0) should be zero
-    
-    //for(vector<int>:: iterator it = upper_c.begin(); it < upper_c.end() -1;it++)
-    for(vector<int>::iterator it = nodes.begin(); it < nodes.end() - 1; it++)
-    {
-        if(fixZ[*it] == 1)
-        {
-            int p = parent2[*it];
-            assert(p!=N);
-            assert(Z[p] < 2);
-            //if(Z[p] < 2) // Z[p] shouldn't be 2
-            //{
-                nZ(Z[*it],Z[p]) -= 1;
-            //}
-        }
-    }
-    
-    lr = gsl_ran_beta(RNG, prior_l_a + nZ(2,1), prior_l_b + nZ(1,1));
-    if(prior_l2_a == 0)
-    {
-        lr2 = 0;
-    }else{
-        lr2 = gsl_ran_beta(RNG, prior_l2_a + nZ(1,2), prior_l2_b + nZ(2,2));
-    }
-    
-    //cout << "Count matrix: " << nZ << endl;
-    //cout <<gr << ", " <<lr <<", " << lr2 << endl;
-    
-    //double theta[3];
-    //double alpha[3] = { prior_glr[0] + nZ(2,0), prior_glr[1] + nZ(1,0), prior_glr[2] + nZ(0,0)};
-    //gsl_ran_dirichlet (RNG, 3, alpha, theta);
-    //trace_l2_rate[m + 1] = theta[0];
-    //trace_g_rate[m + 1] = theta[1];
-    
-    
-    for(vector<int>::iterator it = nodes.begin(); it <nodes.end(); it++)
-    {
-        int s = *it;
-        
-        if(fixZ[*it] == 1)
-        {
-            log_TM_Int[*it](1,1) = 0;
-            log_TM_Int[*it](2,1) = log(0);
-            
-            log_TM_Int[*it](0,0) = log(1 - gr);
-            log_TM_Int[*it](1,0) = log(gr);
-            log_TM_Int[*it](2,0) = log(0);
-            
-        }else{
-            log_TM_Int[s](0,0) = log(1 - gr);
-            log_TM_Int[s](1,0) = log(gr);
-            log_TM_Int[s](2,0) = log(0);
-            
-            double y = 1 - lr;
-            log_TM_Int[s](1,1) = log(y);
-            log_TM_Int[s](2,1) = log(1-y);
-            
-            log_TM_Int[s](1,2) = log(lr2);
-            log_TM_Int[s](2,2) = log(1-lr2);
-        }
-        
-    }
-
-
-//    for(vector<int>:: iterator it = upper_c.begin(); it!=upper_c.end();it++)
-//    {
-//        log_TM_Int[*it](1,1) = 0;
-//        log_TM_Int[*it](2,1) = log(0);
-//
-//        log_TM_Int[*it](0,0) = log(1 - trace_g_rate[m + 1]);
-//        log_TM_Int[*it](1,0) = log(trace_g_rate[m + 1]);
-//        log_TM_Int[*it](2,0) = log(0);
-//
-//    }
-    
+    phyloacc::SampleTransitionRates(
+        RNG, nodes, Z, fixZ, parent2, N, true,
+        prior_g_a, prior_g_b, prior_l_a, prior_l_b, prior_l2_a, prior_l2_b,
+        gr, lr, lr2, log_TM_Int);
 }
 
 
@@ -1582,7 +1498,5 @@ vector<int>  BPP_C::Move_Z(int & propConf, int & revConf, int & changeZ){
 
 
     
-
-
 
 

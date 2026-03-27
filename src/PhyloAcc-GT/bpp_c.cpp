@@ -11,6 +11,7 @@
 #include <gsl/gsl_errno.h>
 
 #include "../PhyloAcc-common/bpp_tree.h"
+#include "../PhyloAcc-common/bpp_transition.h"
 
 //struct Cmp
 //{
@@ -806,71 +807,10 @@ double BPP_C::priorP_Z(BPP & bpp)
 
 void BPP_C::sample_transition( double  & gr, double  & lr, double  & lr2, BPP & bpp)
 {
-
-    mat nZ = zeros(3,3); // record number of Z transitions
-    for(vector<int>::iterator it = nodes.begin(); it < nodes.end() - 1; it++)
-    {
-        int p = bpp.parent[*it];
-        //if(Z[p] < 2)
-        //{
-            nZ(Z[*it],Z[p]) += 1;
-        //}
-
-
-    }
-
-    //cout << "Count matrix: " << nZ << endl;
-    gr = gsl_ran_beta(RNG, prior_g_a + nZ(1,0) + nZ(2,0) , prior_g_b + nZ(0,0));
-
-    //for(vector<int>:: iterator it = upper_c.begin(); it < upper_c.end() -1;it++)
-    for(vector<int>::iterator it = nodes.begin(); it < nodes.end() - 1; it++)
-    {
-        if(fixZ[*it] == 1)
-        {
-            int p = bpp.parent[*it];
-            assert(p!=N);
-            //if(Z[p] < 2)
-            //{
-                nZ(Z[*it],Z[p]) -= 1;
-            //}
-        }
-    }
-
-    lr = gsl_ran_beta(RNG, prior_l_a + nZ(2,1), prior_l_b + nZ(1,1));
-    if(prior_l2_a == 0)
-    {
-        lr2 = 0;
-    }else{
-        lr2 = gsl_ran_beta(RNG, prior_l2_a + nZ(1,2), prior_l2_b + nZ(2,2));
-    }
-
-    for(vector<int>::iterator it = nodes.begin(); it <nodes.end(); it++)
-    {
-        int s = *it;
-
-        if(fixZ[*it] == 1)
-        {
-            log_TM_Int[*it](1,1) = 0;
-            log_TM_Int[*it](2,1) = log(0);
-
-            log_TM_Int[*it](0,0) = log(1 - gr);
-            log_TM_Int[*it](1,0) = log(gr);
-            log_TM_Int[*it](2,0) = log(0);
-
-        }else{
-            log_TM_Int[s](0,0) = log(1 - gr);
-            log_TM_Int[s](1,0) = log(gr);
-
-            double y = 1 - lr;
-            log_TM_Int[s](1,1) = log(y);
-            log_TM_Int[s](2,1) = log(1-y);
-            
-            log_TM_Int[s](2,2) = log(1 - lr2);
-            log_TM_Int[s](1,2) = log(lr2);
-        }
-
-    }
-
+    phyloacc::SampleTransitionRates(
+        RNG, nodes, Z, fixZ, bpp.parent, N, false,
+        prior_g_a, prior_g_b, prior_l_a, prior_l_b, prior_l2_a, prior_l2_b,
+        gr, lr, lr2, log_TM_Int);
 }
 
 // only update probability of nodes above changedZ
@@ -1213,7 +1153,6 @@ void BPP_C::getEmission(int len, BPP & bpp)
 
 void BPP_C::getUpdateNode(bool neut,vector<bool> & visited_init, BPP & bpp) //changedZ from small to large (bottom to top)
 {
-
     for(vector<int>::iterator it = nodes.begin(); it < nodes.end();it++){
         int s = *it;
         if(missing[s])  continue;
@@ -1232,7 +1171,6 @@ void BPP_C::getUpdateNode(bool neut,vector<bool> & visited_init, BPP & bpp) //ch
         }
     }
 }
-
 
 double BPP_C::sample_rate(int indictor, int iter, int max_iter, vector<int> lens, int resZ, double old_rate, bool neut, vector<bool> visited, vec & loglik_old, BPP& bpp, int M, bool adaptive, double adaptive_factor)
 {  //element number ,n or c, #MH steps
