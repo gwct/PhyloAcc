@@ -9,6 +9,7 @@
 #include "bpp_c.hpp"
 #include "bpp.hpp"
 #include <iomanip>
+#include "../PhyloAcc-common/bpp_output.h"
 
 struct Cmp2
 {
@@ -124,40 +125,14 @@ void BPP_C::Output_init(string output_path, string output_path2, BPP &bpp, ofstr
 {
 
     int mid = num_mcmc / 2;
-    std::sort(trace_n_rate.begin() + num_burn, trace_n_rate.begin() + num_mcmc + num_burn);
-    double n_rate = trace_n_rate[mid + num_burn]; //Han: medium
+    double n_rate = phyloacc::MedianInPlace(trace_n_rate, num_burn, num_mcmc + num_burn);
+    double c_rate = phyloacc::MeanRange(trace_c_rate, num_burn, num_mcmc + num_burn);
+    double g_rate = phyloacc::MedianInPlace(trace_g_rate, num_burn, num_mcmc + num_burn);
+    double l_rate = phyloacc::MedianInPlace(trace_l_rate, num_burn, num_mcmc + num_burn);
+    double l2_rate = phyloacc::MedianInPlace(trace_l2_rate, num_burn, num_mcmc + num_burn);
 
-    double c_rate = 0;
-    for (std::size_t i = num_burn; i < num_mcmc + num_burn; i++)
-    {
-        c_rate += trace_c_rate[i];
-    }
-    c_rate /= num_mcmc; //Han mean
-
-    std::sort(trace_g_rate.begin() + num_burn, trace_g_rate.begin() + num_mcmc + num_burn);
-    double g_rate = trace_g_rate[mid + num_burn]; //Han: medium
-
-    std::sort(trace_l_rate.begin() + num_burn, trace_l_rate.begin() + num_mcmc + num_burn);
-    double l_rate = trace_l_rate[mid + num_burn];
-
-    std::sort(trace_l2_rate.begin() + num_burn, trace_l2_rate.begin() + num_mcmc + num_burn);
-    double l2_rate = trace_l2_rate[mid + num_burn];
-
-    vector<vector<int>> countZ = vector<vector<int>>(N, vector<int>(4, 0));
-    for (int s = 0; s < N; s++)
-    {
-
-        for (std::size_t i = num_burn; i < num_mcmc + num_burn; i++)
-        {
-
-            countZ[s][trace_Z[i][s] + 1]++;
-        }
-
-        if (missing[s])
-        {
-            countZ[s][0] = num_mcmc; //set missing s = 1, though Z[s] can be 0/1/2; only missing in upper Z[s] = -1
-        }
-    }
+    vector<vector<int>> countZ = phyloacc::CountZStates(
+        N, num_burn, num_mcmc + num_burn, trace_Z, missing, num_mcmc);
 
     // output top K genetree, K = 5
     set<pair<int, string>, Cmp2> topK;
@@ -190,15 +165,7 @@ void BPP_C::Output_init(string output_path, string output_path2, BPP &bpp, ofstr
 
     #pragma omp critical
     {
-        out_Z << CC << "\t" << n_rate << "\t" << c_rate << "\t" << g_rate << "\t" << l_rate << "\t" << l2_rate;
-        for (int s = 0; s < N; s++)
-        {
-            //out_Z <<"\t"<<countZ[s][0];
-            for (int k = 0; k < 4; k++)
-                out_Z << "\t" << (double)countZ[s][k] / num_mcmc; //?-1
-        }
-
-        out_Z << endl;
+        phyloacc::WriteInitSummaryRow(out_Z, CC, n_rate, c_rate, g_rate, l_rate, l2_rate, countZ, num_mcmc);
     }
 
     for (itbegin = topK.begin(); itbegin != topK.end(); itbegin++)

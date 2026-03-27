@@ -9,6 +9,7 @@
 #include "bpp_c.hpp"
 #include "bpp.hpp"
 #include <iomanip>
+#include "../PhyloAcc-common/bpp_output.h"
 
 
 void BPP_C::Eval2(BPP&bpp, int resZ)  // VB lower bound
@@ -738,52 +739,20 @@ void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ){
 
 void BPP_C::Output_init(string output_path,string output_path2, BPP &bpp, ofstream & out_Z, int resZ) //resZ no use
 {
-    
-    std::sort(trace_n_rate.begin(), trace_n_rate.end());
-    double n_rate =  trace_n_rate[trace_n_rate.size()/2];
-    
-    std::sort(trace_c_rate.begin(), trace_c_rate.end());
-    double c_rate =  trace_c_rate[trace_c_rate.size()/2];
-    
-    std::sort(trace_g_rate.begin(), trace_g_rate.end());
-    double g_rate =  trace_g_rate[trace_g_rate.size()/2];
-    
-    std::sort(trace_l_rate.begin(), trace_l_rate.end());
-    double l_rate =  trace_l_rate[trace_l_rate.size()/2];
-    
-    std::sort(trace_l2_rate.begin(), trace_l2_rate.end());
-    double l2_rate =  trace_l2_rate[trace_l2_rate.size()/2];
-    
-    vector<vector<int>> countZ = vector<vector<int>> (N,vector<int>(4,0));
-    for(int s=0; s<N;s++)
-    {
-        
-        for(std::size_t i = num_burn; i< trace_loglik.size();i++)
-        {
-            
-            countZ[s][trace_Z[i][s]+1]++;
-            
-        }
-        
-        if(missing[s])
-        {
-            countZ[s][0] = num_mcmc;  //set missing s = 1, though Z[s] can be 0/1/2; only missing in upper Z[s] = -1
-        }
-    }
+    double n_rate = phyloacc::MedianInPlace(trace_n_rate, 0, trace_n_rate.size());
+    double c_rate = phyloacc::MedianInPlace(trace_c_rate, 0, trace_c_rate.size());
+    double g_rate = phyloacc::MedianInPlace(trace_g_rate, 0, trace_g_rate.size());
+    double l_rate = phyloacc::MedianInPlace(trace_l_rate, 0, trace_l_rate.size());
+    double l2_rate = phyloacc::MedianInPlace(trace_l2_rate, 0, trace_l2_rate.size());
+
+    vector<vector<int>> countZ = phyloacc::CountZStates(
+        N, num_burn, trace_loglik.size(), trace_Z, missing, num_mcmc);
     
     #pragma omp critical
     {
-        out_Z << CC << "\t" << n_rate << "\t" << c_rate << "\t" << g_rate << "\t" << l_rate << "\t" << l2_rate;
-        for(int s=0; s<N;s++){
-            //out_Z <<"\t"<<countZ[s][0];
-            for(int k=0;k<4;k++)
-                out_Z <<"\t"<<(double)countZ[s][k]/num_mcmc; //?-1
-        }
-        
-        out_Z <<endl;
+        phyloacc::WriteInitSummaryRow(out_Z, CC, n_rate, c_rate, g_rate, l_rate, l2_rate, countZ, num_mcmc);
     }
 }
-
 
 
 
