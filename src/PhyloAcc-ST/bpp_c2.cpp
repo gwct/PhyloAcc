@@ -706,7 +706,7 @@ void BPP_C::log_f_Z(vector<int>& Z, vector<mat> & log_Int, double & MH_ratio_g, 
 
 void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ){
     
-    string outpath_lik = output_path2 +"_mcmc_trace_M" + to_string(resZ) + "_" + to_string(CC) +".txt";
+    string outpath_lik = phyloacc::MakeTracePath(output_path2, resZ, CC);
     ofstream out_lik;
     out_lik.precision(8);
     
@@ -716,9 +716,7 @@ void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ){
       {
         out_lik.open(outpath_lik.c_str());
         out_lik << "loglik\trate_n\trate_c\tgrate\tlrate\tlrate2\t";
-        for(int s =0 ;s<N;s++){  // header: species name
-            out_lik<<bpp.nodes_names[s] << "\t";
-        }
+        phyloacc::WriteNodeHeader(out_lik, bpp.nodes_names);
         out_lik <<endl;
       }else{
         out_lik.open(outpath_lik.c_str(), ios::app);
@@ -727,8 +725,7 @@ void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ){
       for(std::size_t i=0; i< trace_loglik.size();i++)
         {
             out_lik<<trace_loglik[i]<<"\t"<<trace_n_rate[i] << "\t"<<trace_c_rate[i]<<"\t"<<trace_g_rate[i]<<"\t"<<trace_l_rate[i]<<"\t"<<trace_l2_rate[i]<<"\t";
-            for(int s=0; s<N;s++)
-                out_lik<<trace_Z[i][s]<<"\t";
+            phyloacc::WriteZTraceRow(out_lik, trace_Z[i]);
             out_lik <<endl;
         }
     
@@ -753,7 +750,6 @@ void BPP_C::Output_init(string output_path,string output_path2, BPP &bpp, ofstre
         phyloacc::WriteInitSummaryRow(out_Z, CC, n_rate, c_rate, g_rate, l_rate, l2_rate, countZ, num_mcmc);
     }
 }
-
 
 
 

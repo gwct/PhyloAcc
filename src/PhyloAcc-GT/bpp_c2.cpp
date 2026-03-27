@@ -26,7 +26,7 @@ struct Cmp2
 void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ)
 {
 
-    string outpath_lik = output_path2 + "_mcmc_trace_M" + to_string(resZ) + "_" + to_string(CC) + ".txt";
+    string outpath_lik = phyloacc::MakeTracePath(output_path2, resZ, CC);
     ofstream out_lik;
     out_lik.precision(8);
 
@@ -36,10 +36,7 @@ void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ)
         {
             out_lik.open(outpath_lik.c_str());
             out_lik << "iter\tloglik\tindicator\trate_n\trate_c\tpi_A\tGTtop\t";
-            for (int s = 0; s < N; s++)
-            { // header: species name
-                out_lik << bpp.nodes_names[s] << "\t";
-            }
+            phyloacc::WriteNodeHeader(out_lik, bpp.nodes_names);
             out_lik<<"grate\tlrate";
             out_lik << endl;
         }
@@ -51,8 +48,7 @@ void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ)
         for (std::size_t i = 0; i < num_mcmc + num_burn; i++)
         {
             out_lik << iter << "\t" << trace_loglik[i] << "\t" << trace_indicator[i] << "\t" << trace_n_rate[i] << "\t" << trace_c_rate[i] << "\t" << trace_pi[i][0] << "\t" <<trace_GTtopChg[i] << "\t";
-            for (int s = 0; s < N; s++)
-                out_lik << trace_Z[i][s] << "\t";
+            phyloacc::WriteZTraceRow(out_lik, trace_Z[i]);
             out_lik <<trace_g_rate[i]<<"\t"<<trace_l_rate[i] <<"\t" << trace_l2_rate[i] << endl;
         }
 

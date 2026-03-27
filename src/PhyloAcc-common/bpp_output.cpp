@@ -4,6 +4,11 @@
 
 namespace phyloacc
 {
+std::string MakeTracePath(const std::string& output_path2, int resZ, int cc)
+{
+    return output_path2 + "_mcmc_trace_M" + std::to_string(resZ) + "_" + std::to_string(cc) + ".txt";
+}
+
 double MedianInPlace(std::vector<double>& values, std::size_t begin, std::size_t end)
 {
     std::sort(values.begin() + begin, values.begin() + end);
@@ -54,5 +59,19 @@ void WriteInitSummaryRow(std::ofstream& out_Z,
             out_Z << "\t" << static_cast<double>(countZ[s][k]) / denom;
     }
     out_Z << std::endl;
+}
+
+void WriteNodeHeader(std::ofstream& out,
+                     const std::vector<std::string>& node_names)
+{
+    for (std::size_t s = 0; s < node_names.size(); ++s)
+        out << node_names[s] << "\t";
+}
+
+void WriteZTraceRow(std::ofstream& out,
+                    const std::vector<int>& trace_row)
+{
+    for (std::size_t s = 0; s < trace_row.size(); ++s)
+        out << trace_row[s] << "\t";
 }
 }
