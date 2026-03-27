@@ -119,8 +119,6 @@ void BPP_C::Output_tree(int iter, string outpathG, BPP &bpp, int resZ)
 
 void BPP_C::Output_init(string output_path, string output_path2, BPP &bpp, ofstream &out_Z, ofstream &out_tree, int mod_GT)
 {
-
-    int mid = num_mcmc / 2;
     double n_rate = phyloacc::MedianInPlace(trace_n_rate, num_burn, num_mcmc + num_burn);
     double c_rate = phyloacc::MeanRange(trace_c_rate, num_burn, num_mcmc + num_burn);
     double g_rate = phyloacc::MedianInPlace(trace_g_rate, num_burn, num_mcmc + num_burn);
