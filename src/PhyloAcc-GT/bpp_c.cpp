@@ -480,7 +480,7 @@ void BPP_C::Gibbs(int iter, int max_iter, BPP &bpp, ofstream & outZ, string outp
             {
                 double logNorm1 =0;
                 logNorm = 0;
-                for(std::size_t i =new_burn; i< new_burn+new_mcmc;i++)
+                for(int i = new_burn; i < new_burn + new_mcmc; i++)
                 {
                     logNorm += trace_logNormratio[i];
                     if(i >= new_burn + ceil(new_mcmc/2)) logNorm1 += trace_logNormratio[i];
@@ -649,7 +649,7 @@ void BPP_C::Gibbs(int iter, int max_iter, BPP &bpp, ofstream & outZ, string outp
 
             double accept1=0.0;
             if(m%num_thin==0){
-            for (int b = 0; b <gtree->gene_nodes.size() ; b++)
+            for (std::size_t b = 0; b < gtree->gene_nodes.size(); b++)
             {   
                 if (gtree->gene_nodes[b] >= S){ //sample internal node's kid's branch
                     GTree gt_org(N, S);

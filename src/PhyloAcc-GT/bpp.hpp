@@ -356,7 +356,7 @@ public:
     move_br = vector<int> (N, 0);
     cons_sample = false;
     if(dp_species.size()>0){ 
-        for(int i=0; i<dp_species.size(); i++){
+        for(std::size_t i = 0; i < dp_species.size(); i++){
             bool upper_rel = true;
             set<int>:: iterator it_out=upper.find(dp_species[i]);
             if(it_out ==upper.end()){

@@ -44,7 +44,7 @@ void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ)
             out_lik.open(outpath_lik.c_str(), ios::app);
         }
 
-        for (std::size_t i = 0; i < num_mcmc + num_burn; i++)
+        for (int i = 0; i < num_mcmc + num_burn; i++)
         {
             out_lik << iter << "\t" << trace_loglik[i] << "\t" << trace_indicator[i] << "\t" << trace_n_rate[i] << "\t" << trace_c_rate[i] << "\t" << trace_pi[i][0] << "\t" <<trace_GTtopChg[i] << "\t";
             phyloacc::WriteZTraceRow(out_lik, trace_Z[i]);

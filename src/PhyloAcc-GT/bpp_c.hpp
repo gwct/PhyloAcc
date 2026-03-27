@@ -409,7 +409,7 @@ public:
 
             }
 
-            if(GG - missingBase.size() < min_length)
+            if(static_cast<int>(GG - missingBase.size()) < min_length)
             {
                 filter = true;
                 return;

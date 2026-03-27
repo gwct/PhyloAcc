@@ -230,7 +230,7 @@ void GTree:: initTree(string tree_str, vector<bool> & missing, set<int> & upper,
             }
         }
         if(toErase.size()>0){
-            for(int i=0; i<toErase.size();i++) temp_children[s].erase(toErase[i]);
+            for(std::size_t i = 0; i < toErase.size(); i++) temp_children[s].erase(toErase[i]);
         }
         
         for(set<pair<int, double>, Cmp>::iterator it = tocoal.begin(); it!=tocoal.end(); it++)
@@ -339,7 +339,7 @@ void GTree:: initTree(string tree_str, BPP & bpp) // not implement with missing
             }
         }
         if(toErase.size()>0){
-            for(int i=0; i<toErase.size();i++) temp_children[s].erase(toErase[i]);
+            for(std::size_t i = 0; i < toErase.size(); i++) temp_children[s].erase(toErase[i]);
         }
         
         for(set<pair<int, double>, Cmp>::iterator it = tocoal.begin(); it!=tocoal.end(); it++)
@@ -2078,7 +2078,7 @@ void GTree::printSptree(BPP& bpp, int l){
     cout<<"\n\ngenetree root is"<<root<<endl;
 
     cout<<"\nvar_br_nodes are:";
-    for(int i=0; i<var_br_node.size(); i++) cout<<var_br_node[i]<<" ";
+    for(std::size_t i = 0; i < var_br_node.size(); i++) cout<<var_br_node[i]<<" ";
     cout<<endl;
     
     cout << "\nprint gt:" << endl;
@@ -2291,7 +2291,7 @@ bool GTree::Sample_tree2(int branch, int indicator, BPP & bpp, vector<int> & Z, 
             }
         }else{ //for situation that actual coal will happen in temp_kid_sp as it is long. But current grd is in ancestor node.
             int grd_ct=0;
-            for(int tmp_lin = 0; tmp_lin<tmp_pg2.size();tmp_lin++){
+            for(std::size_t tmp_lin = 0; tmp_lin < tmp_pg2.size(); tmp_lin++){
                 map<int,int>:: iterator it_coal = parent_gene2[ss_p].find(tmp_pg2[tmp_lin]);
                 if(it_coal==parent_gene2[ss_p].end()) cout<<"cannot find tmp_pg2[tmp_lin]="<<tmp_pg2[tmp_lin]<<endl;
                 int temp_g = it_coal->second;
@@ -2396,7 +2396,7 @@ bool GTree::Sample_tree2(int branch, int indicator, BPP & bpp, vector<int> & Z, 
 
         unsigned int new_p[coal_gnode.size()];
         gsl_ran_multinomial(RNG, coal_gnode.size(), 1, sample_p.memptr(), new_p);
-        for (get_p = 0; get_p < coal_gnode.size(); get_p++){
+        for (get_p = 0; get_p < static_cast<int>(coal_gnode.size()); get_p++){
             if (new_p[get_p] > 0)
                 break;
         }
