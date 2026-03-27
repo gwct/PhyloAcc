@@ -5,7 +5,7 @@
       "status": "PASS"
     },
     "tests/test_interface.py": {
-      "last_run": "2026-03-27T10:43:37",
+      "last_run": "2026-03-27T11:15:39",
       "status": "PASS"
     },
     "tests/test_optional_testdata.py": {
@@ -13,7 +13,7 @@
       "status": "PASS"
     },
     "tests/test_st_gt.py": {
-      "last_run": "2026-03-27T10:43:37",
+      "last_run": "2026-03-27T11:15:39",
       "status": "PASS"
     },
     "tests/test_unit_alignment.py": {
@@ -40,7 +40,7 @@
   "session": {
     "command": "PHYLOACC_RUN_GT=1 /n/home07/gthomas/miniconda3/envs/phyloacc-test/bin/python -m pytest tests/test_interface.py tests/test_st_gt.py -q",
     "exitstatus": 0,
-    "summary": "3 passed in 221.94s",
-    "timestamp": "2026-03-27T10:43:37"
+    "summary": "3 passed in 220.90s",
+    "timestamp": "2026-03-27T11:15:39"
   }
 }

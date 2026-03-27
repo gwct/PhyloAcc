@@ -11,6 +11,7 @@
 #include <gsl/gsl_errno.h>
 
 #include "../PhyloAcc-common/bpp_tree.h"
+#include "../PhyloAcc-common/bpp_update.h"
 #include "../PhyloAcc-common/bpp_transition.h"
 
 //void BPP_C::getSubtree(int root, set<int>& child, vector<int> & visited_init)  // traverse from root, stop at children, 74 & 64; do include 1-S!
@@ -524,26 +525,7 @@ void BPP_C::sample_transition( double  & gr, double  & lr, double  & lr2)
 // only update probability of nodes above changedZ
 void BPP_C::getUpdateNode(vector<int> changedZ, vector<bool> & visited_init) //changedZ from small to large (bottom to top)
 {
-    for(int i =0;i<N;i++)
-        visited_init[i] = true;
-    
-    if(changedZ.size()==0) return;
-    for(vector<int>::iterator it = changedZ.end()-1 ; it >= changedZ.begin(); --it){
-        int j = *it;
-        j = parent2[j];
-        
-        while(j!=N)
-        {
-            if(!visited_init[j]) break;
-            visited_init[j] = 0;
-            for(int g=0; g<GG; g++) lambda[g][j].zeros();  // only fathers of changedZ!
-            
-            j = parent2[j];
-            assert(j!=-1);
-            
-        }
-    }
-    
+    phyloacc::MarkChangedZAncestors(changedZ, N, N, parent2, true, true, visited_init, &lambda);
 }
 
 void BPP_C::Update_Tg(int g, vector<bool> visited, BPP& bpp, bool tosample)  // impute base pair of each internal node (except missing nodes)
@@ -1498,5 +1480,4 @@ vector<int>  BPP_C::Move_Z(int & propConf, int & revConf, int & changeZ){
 
 
     
-
 
