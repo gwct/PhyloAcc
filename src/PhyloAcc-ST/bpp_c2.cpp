@@ -8,7 +8,6 @@
 
 #include "bpp_c.hpp"
 #include "bpp.hpp"
-#include <iomanip>
 #include "../PhyloAcc-common/bpp_output.h"
 
 
@@ -750,7 +749,6 @@ void BPP_C::Output_init(string output_path,string output_path2, BPP &bpp, ofstre
         phyloacc::WriteInitSummaryRow(out_Z, CC, n_rate, c_rate, g_rate, l_rate, l2_rate, countZ, num_mcmc);
     }
 }
-
 
 
 

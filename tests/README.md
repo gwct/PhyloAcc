@@ -27,7 +27,7 @@ Minimal Test Data
 Latest Suite Status
 - Last pytest session: `2026-03-27`
 - Command shape used here: `PHYLOACC_RUN_GT=1 /n/home07/gthomas/miniconda3/envs/phyloacc-test/bin/python -m pytest tests/test_interface.py tests/test_st_gt.py -q`
-- Result: `3 passed in 218.39s`
+- Result: `3 passed in 221.40s`
 - GT golden status: `tests/golden/minimal/gt_rate_postZ_M0.txt` exists
 
 Status Legend

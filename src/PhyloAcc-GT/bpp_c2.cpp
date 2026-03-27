@@ -8,7 +8,6 @@
 
 #include "bpp_c.hpp"
 #include "bpp.hpp"
-#include <iomanip>
 #include "../PhyloAcc-common/bpp_output.h"
 
 struct Cmp2

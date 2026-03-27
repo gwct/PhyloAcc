@@ -1,6 +1,7 @@
 #ifndef PHYLOACC_COMMON_BPP_OUTPUT_H
 #define PHYLOACC_COMMON_BPP_OUTPUT_H
 
+#include <cstddef>
 #include <fstream>
 #include <string>
 #include <vector>
