@@ -710,7 +710,7 @@ void BPP_C::Gibbs(int iter, int max_iter, BPP &bpp, ofstream & outZ, string outp
 
         if (m == 0){ 
             bpp.log_mle[resZ][CC] = log_lik_old[0] + logp_Z[0];
-        }else if (m >= new_burn & (log_lik_old[0] + logp_Z[0]) > bpp.log_mle[resZ][CC]){
+        }else if (m >= new_burn && (log_lik_old[0] + logp_Z[0]) > bpp.log_mle[resZ][CC]){
             bpp.log_mle[resZ][CC] = log_lik_old[0] + logp_Z[0];
         }
     }
