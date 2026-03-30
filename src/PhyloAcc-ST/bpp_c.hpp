@@ -52,7 +52,7 @@ class BPP_C
     int    (*children2)[2];  //children from pruned tree
     double  *distances2;
     int *parent2;
-    int root;
+    int root = -1;
     vec pi;
     vec log_pi;
     
@@ -89,7 +89,7 @@ class BPP_C
     
     
     // MCMC updating states
-    int m;                                      // current MCMC step
+    int m = 0;                                      // current MCMC step
     
     vector<mat> log_TM_Int;
     
@@ -106,8 +106,8 @@ class BPP_C
     
     
     // samples to output
-    double MaxLoglik;
-    int Max_m;
+    double MaxLoglik = -INFINITY;
+    int Max_m = 0;
     vector <int > Max_Z;
     
     vector< double >  trace_loglik;  //P(X|Z, TM, r)
@@ -123,17 +123,17 @@ class BPP_C
     int accept_n_rate = 0;
     int accept_c_rate = 0;  //how many accepted in current cycle
     
-    double prop_n;  //for adaptive MCMC, changed by acceptance rate
-    double prop_c;
+    double prop_n = 0.0;  //for adaptive MCMC, changed by acceptance rate
+    double prop_c = 0.0;
     
     
     
     // GSL random number generator
-    gsl_rng * RNG;
+    gsl_rng * RNG = nullptr;
     
-    time_t last_time;
+    time_t last_time = 0;
     
-    unsigned long int seed;
+    unsigned long int seed = 0;
 
     
 public:
@@ -285,7 +285,7 @@ public:
                 
             }
             
-            if(GG - missingBase.size() < min_length)
+            if(static_cast<int>(GG - missingBase.size()) < min_length)
             {
                 filter = true;
                 return;

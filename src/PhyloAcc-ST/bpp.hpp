@@ -82,9 +82,9 @@ private:
     
     
     // phylogenetic tree (using array to accelerate)
-    int    (*children)[2];
-    int     *parent;
-    double  *distances;
+    int    (*children)[2] = nullptr;
+    int     *parent = nullptr;
+    double  *distances = nullptr;
     vec pi;
     vec log_pi;
     mat eigenvec; vec eigenval;
@@ -93,7 +93,7 @@ private:
     double indel;
     double indel2;
     
-    int num_base;
+    int num_base = 0;
     
     mat eigenvecprop; vec eigenvalprop;
     mat eigeninvprop; vec piprop;
@@ -155,18 +155,18 @@ private:
     
     
     
-    time_t last_time;
-    unsigned long int seed;
+    time_t last_time = 0;
+    unsigned long int seed = 0;
 
 
     
 public:
-    int N;
-    int C;  //total number of elements
+    int N = 0;
+    int C = 0;  //total number of elements
     vector< string > species_names; // size S
     vector<string> nodes_names;  //size N
     // GSL random number generator
-    gsl_rng * RNG;
+    gsl_rng * RNG = nullptr;
 
 
 
