@@ -41,17 +41,17 @@ class BPP_C
 {
     private:
     
-    int CC;  //current number of elements
-    int GG; //base pairs current elements
+    int CC = 0;  //current number of elements
+    int GG = 0; //base pairs current elements
     
-    int S;
-    int N;
+    int S = 0;
+    int N = 0;
     
     vector< vector<vec > > ambiguousS_null;  //base * species# * 4;
     
-    int    (*children2)[2];  //children from pruned tree
-    double  *distances2;
-    int *parent2;
+    int    (*children2)[2] = nullptr;  //children from pruned tree
+    double  *distances2 = nullptr;
+    int *parent2 = nullptr;
     int root = -1;
     vec pi;
     vec log_pi;
@@ -64,14 +64,14 @@ class BPP_C
     vector<int> upper_conserve_c;
     
    // double prior_glr[3];
-    double prior_l_a, prior_l_b;
-     double prior_l2_a, prior_l2_b;
-     double prior_g_a, prior_g_b;
-    double ratio0;
-    double ratio1;
-    int num_burn;   // num of burn-in updates
-    int num_mcmc;   // num of MCMC updates
-    int num_thin;   // num of updates between two samples
+    double prior_l_a = 0.0, prior_l_b = 0.0;
+     double prior_l2_a = 0.0, prior_l2_b = 0.0;
+     double prior_g_a = 0.0, prior_g_b = 0.0;
+    double ratio0 = 0.0;
+    double ratio1 = 0.0;
+    int num_burn = 0;   // num of burn-in updates
+    int num_mcmc = 0;   // num of MCMC updates
+    int num_thin = 0;   // num of updates between two samples
     int adaptive_freq = 100;
    
     vector<int>Z ; //N *0, accelerate(time,0-1), loss(-1)
@@ -138,7 +138,7 @@ class BPP_C
     
 public:
     bool failure = false;
-    bool verbose; 
+    bool verbose = false; 
     
     BPP_C(int c, PhyloProf _prof, BPP& bpp, char gapchar, double missing_thres, bool & filter, bool _verbose, double consToMis, bool prune=0, double revgap=0, int min_length =50, double nconsToMis = 1)//, double _indel)
     {

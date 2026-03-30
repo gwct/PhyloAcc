@@ -79,15 +79,15 @@ class BPP_C
 {
     private:
 
-    int CC;  //current number of elements
+    int CC = 0;  //current number of elements
     int GG_block = 0;
 
-    int S;
-    int N;
+    int S = 0;
+    int N = 0;
 
     //vector< vector<vec > > ambiguousS_null;  //base * species# * 4;
 
-    int    (*children2)[2];  //children from pruned tree
+    int    (*children2)[2] = nullptr;  //children from pruned tree
     int root = -1;
     //Han*: change to vector
     vec pi;
@@ -113,15 +113,15 @@ class BPP_C
     vector<int> upper_conserve_c;
 
    // double prior_glr[3];
-    double prior_l_a, prior_l_b;
-    double prior_l2_a, prior_l2_b;
-    double prior_g_a, prior_g_b;
-    double ratio0;
-    double ratio1;
-    int num_burn;   // num of burn-in updates
-    int num_mcmc;   // num of MCMC updates
-    int num_thin;   // num of updates between two samples
-    int adaptive_freq; //= 100;
+    double prior_l_a = 0.0, prior_l_b = 0.0;
+    double prior_l2_a = 0.0, prior_l2_b = 0.0;
+    double prior_g_a = 0.0, prior_g_b = 0.0;
+    double ratio0 = 0.0;
+    double ratio1 = 0.0;
+    int num_burn = 0;   // num of burn-in updates
+    int num_mcmc = 0;   // num of MCMC updates
+    int num_thin = 0;   // num of updates between two samples
+    int adaptive_freq = 0; //= 100;
 
     vector<int> Z ; //N *0, accelerate(time,0-1), loss(-1)
     vector<int> fixZ ;
@@ -170,11 +170,11 @@ class BPP_C
     double prop_n = 0.0;  //for adaptive MCMC, changed by acceptance rate
     double prop_c = 0.0;
 
-    double consToMis;
-    double nconsToMis;
+    double consToMis = 0.0;
+    double nconsToMis = 0.0;
 
     // GSL random number generator
-    gsl_rng * RNG;
+    gsl_rng * RNG = nullptr;
 
     time_t last_time = 0;
 
@@ -184,10 +184,10 @@ class BPP_C
     friend class GTree;
 
 public:
-    int GG; //base pairs current elements
+    int GG = 0; //base pairs current elements
     bool failure = false;
-    bool verbose;
-    bool verboseGT;
+    bool verbose = false;
+    bool verboseGT = false;
     int idblk_count=0; //length of 1st blck of all identical bp across sp.
     
     BPP_C(int c, PhyloProf _prof, BPP& bpp, char gapchar, double missing_thres, bool & filter, bool _verbose, bool _verboseGT, double _consToMis, int blocks = 20, bool prune=0, double revgap=0, int min_length =50, double _nconsToMis = 0.5)//, double _indel)

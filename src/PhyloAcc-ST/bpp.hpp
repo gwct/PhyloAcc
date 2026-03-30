@@ -45,23 +45,23 @@ class BPP
     
 private:
     
-    int G;  //total base pairs
-    int S;
+    int G = 0;  //total base pairs
+    int S = 0;
     vector <unsigned int> element_size;
     vector <unsigned int> element_start;
     
-    double ratio0;
-    double ratio1;
-    double cub;
-    double nlb;
-    int ropt;
+    double ratio0 = 0.0;
+    double ratio1 = 0.0;
+    double cub = 0.0;
+    double nlb = 0.0;
+    int ropt = 0;
     
     // names of species
     vector<int> target_species;
     vector<int> conservedgroup;
     //int refspecies;
     
-    double conserve_prop;
+    double conserve_prop = 0.0;
     
     vector<int> outgroup;
     set<int> upper;
@@ -90,8 +90,8 @@ private:
     mat eigenvec; vec eigenval;
     mat eigeninv;
     mat submat;
-    double indel;
-    double indel2;
+    double indel = 0.0;
+    double indel2 = 0.0;
     
     int num_base = 0;
     
@@ -105,14 +105,14 @@ private:
     vector<vector < vector <int > >> cur_Z;
     
     
-    double ind_lrate, ind_lrate2;  //for Z
-    double ind_grate;
+    double ind_lrate = 0.0, ind_lrate2 = 0.0;  //for Z
+    double ind_grate = 0.0;
     double vlr = 100; // proposal variance of loss rate
     double vgr = 100; // proposal variance of gain rate
     //double prior_glr[3];
-    double prior_l_a, prior_l_b;
-    double prior_l2_a, prior_l2_b;
-    double prior_g_a, prior_g_b;
+    double prior_l_a = 0.0, prior_l_b = 0.0;
+    double prior_l2_a = 0.0, prior_l2_b = 0.0;
+    double prior_g_a = 0.0, prior_g_b = 0.0;
     
     vector<mat >  TM_Int;
     //vector<mat>  TM_null;
@@ -149,8 +149,8 @@ private:
     
     
     //hyperparameter of prior_c, prior_n;
-    double nprior_a, nprior_b;  //around 1
-    double cprior_a, cprior_b;  //around ratio
+    double nprior_a = 0.0, nprior_b = 0.0;  //around 1
+    double cprior_a = 0.0, cprior_b = 0.0;  //around ratio
     
     
     
