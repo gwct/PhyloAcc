@@ -47,7 +47,7 @@ private:
     vector <unsigned int> element_start;
     vector<string> element_tree;
 
-    int root_ingrp;
+    int root_ingrp = -1;
 
     double ratio0;
     double ratio1;
@@ -59,7 +59,7 @@ private:
     vector<int> target_species;
     vector<int> conservedgroup;
     vector<int> dp_species;
-    bool cons_sample;
+    bool cons_sample = false;
     //int refspecies;
 
     double conserve_prop;
@@ -147,29 +147,29 @@ private:
     double nprior_a, nprior_b;  //around 1
     double cprior_a, cprior_b;  //around ratio
 
-    time_t last_time;
-    unsigned long int seed;
-    unsigned long int seed2;
+    time_t last_time = 0;
+    unsigned long int seed = 0;
+    unsigned long int seed2 = 0;
     friend class GTree;
 
 
 public:
-    int N;
-    int C;  //total number of elements
-    int num_base;
+    int N = 0;
+    int C = 0;  //total number of elements
+    int num_base = 0;
     
     vector< string > species_names; // size S
     vector<string> nodes_names;  //size N
     // GSL random number generator
-    gsl_rng * RNG;
+    gsl_rng * RNG = nullptr;
     std::mt19937 twister;
     std::mt19937 twister2; //for shuffling input data only.
     
     // species tree (using array to accelerate)
-    int    (*children)[2];
-    int     *parent;
-    double  *distances;
-    double  *thetas;
+    int    (*children)[2] = nullptr;
+    int     *parent = nullptr;
+    double  *distances = nullptr;
+    double  *thetas = nullptr;
     vector<double> heights;
     vector<int> move_br; //branches that may diff from Sp tree
 
@@ -177,7 +177,7 @@ public:
     vector<vector< double >>   log_liks_Z; //Store max posterior 
     vector<vector<double>> log_mle;
     
-    double br_sample_cutoff;
+    double br_sample_cutoff = 0.0;
     
     //Han*: BPP dirichlet prior param arguments added
     //BPP(int pC, PhyloProf & _prof, PhyloTree & _tree, string output_path, string _target, string _outgroup, double _conserve_prop, string _conservegroup, double _ratio0, double _ratio1, int _ropt, double _cub, double _nlb, double _npriora, double _npriorb, double _cpriora, double _cpriorb, int _seed, double _prep_grate, double _prep_lrate, double _prep_lrate2, double _prior_g_a, double _prior_g_b, double _prior_l_a, double _prior_l_b,double _prior_l2_a, double _prior_l2_b, double _indel, double _indel2, double missing_thres, bool _sample_indel)
