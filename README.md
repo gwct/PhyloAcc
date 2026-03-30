@@ -31,6 +31,21 @@ mamba install phyloacc
 
 For more detailed instructions and troubleshooting, see [the Installation page](https://phyloacc.github.io/install.html). If you have other questions or trouble let us know by posting [an issue on the github repo](https://github.com/phyloacc/PhyloAcc/issues).
 
+## Developer Build Notes
+
+- The supported regression-testing build path in this repo is the conda-forge/bioconda-aligned GCC 14 toolchain, not an arbitrary local `g++`.
+- In this workspace that means building with the wrapper used by the test suite, for example:
+
+```bash
+conda run -n phyloacc-test make -B \
+  CXX=/n/holylfs05/LABS/informatics/Lab/projects/gwct/phyloacc/PhyloAcc/dev/cc14-wrap.sh \
+  PREFIX=/n/home07/gthomas/miniconda3/envs/phyloacc-test \
+  PhyloAcc-ST PhyloAcc-GT
+```
+
+- `src/PhyloAcc-common/` is now the active shared implementation path for common parsing and helper code.
+- The duplicate `profile.*`, `newick.*`, and `utils.*` files still present under `src/PhyloAcc-ST/` and `src/PhyloAcc-GT/` are legacy, not part of the current build, and should not be edited as if they were active sources.
+
 # Usage
 
 For more detailed information and example commands, see [the README on the PhyloAcc website](https://phyloacc.github.io/readme.html)

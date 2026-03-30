@@ -35,6 +35,9 @@ INCLUDES_COMMON=$(SRC_DIR_COMMON)/*.h
 COMMON_INCLUDE=-I$(SRC_DIR_COMMON)
 
 SRC_DIR_ST=src/$(TARGET_ST)/
+# Shared implementations now live in src/PhyloAcc-common/.
+# The legacy ST-local profile/newick/utils copies are intentionally excluded
+# from the build and should not be treated as the active implementation path.
 SRCS_ST=$(filter-out $(SRC_DIR_ST)profile.cpp $(SRC_DIR_ST)newick.cpp $(SRC_DIR_ST)utils.cpp,$(wildcard $(SRC_DIR_ST)*.cpp)) $(SRCS_COMMON)
 INCLUDES_ST=$(SRC_DIR_ST)/*.h $(SRC_DIR_ST)/*.hpp $(INCLUDES_COMMON)
 ST_INCLUDE=-I$(SRC_DIR_ST)
@@ -47,6 +50,9 @@ $(TARGET_ST): $(SRCS_ST) $(INCLUDES_ST)
 ############
 
 SRC_DIR_GT=src/$(TARGET_GT)/
+# Shared implementations now live in src/PhyloAcc-common/.
+# The legacy GT-local profile/newick/utils copies are intentionally excluded
+# from the build and should not be treated as the active implementation path.
 SRCS_GT=$(filter-out $(SRC_DIR_GT)profile.cpp $(SRC_DIR_GT)newick.cpp $(SRC_DIR_GT)utils.cpp,$(wildcard $(SRC_DIR_GT)*.cpp)) $(SRCS_COMMON)
 INCLUDES_GT=$(SRC_DIR_GT)/*.h $(SRC_DIR_GT)/*.hpp $(INCLUDES_COMMON)
 GT_INCLUDE=-I$(SRC_DIR_GT)

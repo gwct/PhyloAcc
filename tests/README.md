@@ -14,6 +14,10 @@ Quick Start
 Environment
 - This repo expects the conda environment `phyloacc-test`.
 - The C++ unit binaries in `tests/cpp/` link against libraries from `CONDA_PREFIX`.
+- Regression validation for ST/GT binaries assumes the supported GCC14 wrapper/toolchain path, not an arbitrary local `g++`.
+- Example supported rebuild:
+  - `conda run -n phyloacc-test make -B CXX=/n/holylfs05/LABS/informatics/Lab/projects/gwct/phyloacc/PhyloAcc/dev/cc14-wrap.sh PREFIX=/n/home07/gthomas/miniconda3/envs/phyloacc-test PhyloAcc-ST PhyloAcc-GT`
+- The duplicate `profile.*`, `newick.*`, and `utils.*` files still present under `src/PhyloAcc-ST/` and `src/PhyloAcc-GT/` are legacy copies excluded by `Makefile`; the active shared implementations live under `src/PhyloAcc-common/`.
 
 Minimal Test Data
 - `tests/data/minimal/` is hand-written synthetic data, not output copied from production analyses.
@@ -26,8 +30,8 @@ Minimal Test Data
 
 Latest Suite Status
 - Last pytest session: `2026-03-30`
-- Command shape used here: `PHYLOACC_RUN_GT=1 /n/home07/gthomas/miniconda3/envs/phyloacc-test/bin/python -m pytest tests/test_interface.py tests/test_st_gt.py -q`
-- Result: `3 passed in 214.16s`
+- Command shape used here: `PHYLOACC_RUN_GT=1 PHYLOACC_RUN_TESTDATA=1 /n/home07/gthomas/miniconda3/envs/phyloacc-test/bin/python -m pytest -q`
+- Result: `33 passed in 234.59s`
 - GT golden status: `tests/golden/minimal/gt_rate_postZ_M0.txt` exists
 
 Status Legend
