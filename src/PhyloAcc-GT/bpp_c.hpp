@@ -80,7 +80,7 @@ class BPP_C
     private:
 
     int CC;  //current number of elements
-    int GG_block;
+    int GG_block = 0;
 
     int S;
     int N;
@@ -88,7 +88,7 @@ class BPP_C
     //vector< vector<vec > > ambiguousS_null;  //base * species# * 4;
 
     int    (*children2)[2];  //children from pruned tree
-    int root;
+    int root = -1;
     //Han*: change to vector
     vec pi;
     vec log_pi;
@@ -133,15 +133,15 @@ class BPP_C
     vector< vector<double> >  log_emission; //( N-1)*2
 
     // MCMC updating states
-    int m;                                      // current MCMC step
+    int m = 0;                                      // current MCMC step
 
     vector<mat> log_TM_Int;
 
     vec prior_z;
     
     // samples to output
-    double MaxLoglik;
-    int Max_m;
+    double MaxLoglik = -INFINITY;
+    int Max_m = 0;
     vector <int > Max_Z;
     string Max_GT;
     //Han*: save running max for pi and acgt counts (for posterior parameters)
@@ -167,8 +167,8 @@ class BPP_C
     int accept_n_rate = 0;
     int accept_c_rate = 0;  //how many accepted in current cycle
 
-    double prop_n;  //for adaptive MCMC, changed by acceptance rate
-    double prop_c;
+    double prop_n = 0.0;  //for adaptive MCMC, changed by acceptance rate
+    double prop_c = 0.0;
 
     double consToMis;
     double nconsToMis;
@@ -176,11 +176,11 @@ class BPP_C
     // GSL random number generator
     gsl_rng * RNG;
 
-    time_t last_time;
+    time_t last_time = 0;
 
-    unsigned long int seed;
-    unsigned long int seed2;
-    GTree* gtree;
+    unsigned long int seed = 0;
+    unsigned long int seed2 = 0;
+    GTree* gtree = nullptr;
     friend class GTree;
 
 public:

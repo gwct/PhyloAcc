@@ -25,9 +25,9 @@ Minimal Test Data
 - The optional larger integration tier uses files from `../PhyloAcc-test-data/` and is kept separate from the minimal synthetic fixtures.
 
 Latest Suite Status
-- Last pytest session: `2026-03-27`
+- Last pytest session: `2026-03-30`
 - Command shape used here: `PHYLOACC_RUN_GT=1 /n/home07/gthomas/miniconda3/envs/phyloacc-test/bin/python -m pytest tests/test_interface.py tests/test_st_gt.py -q`
-- Result: `3 passed in 219.64s`
+- Result: `3 passed in 206.25s`
 - GT golden status: `tests/golden/minimal/gt_rate_postZ_M0.txt` exists
 
 Status Legend
@@ -47,8 +47,8 @@ Test Inventory
 | `tests/test_unit_templates.py` | Python unit | Interface config template generation for ST and GT | Inline string literals only | No external data; template inputs are hand-written format arguments. | `■ PASS` | `2026-03-27` | Locks down emitted config structure. |
 | `tests/test_unit_tree_groups.py` | Python unit | Propagation of target, conserved, and outgroup branch categories from tip assignments | `tests/data/unit/tree_groups.nwk` | The test tree is stored as a hand-written Newick fixture file. | `■ PASS` | `2026-03-27` | Covers internal branch categorization logic in tree.py. |
 | `tests/test_unit_batch.py` | Python unit | Batch job-file generation for ST and GT configs, including ID files and model-specific options | Temporary files written under `tmp_path` from inline sequences/tree strings | Configs, model file, and coal tree are generated on the fly from hand-written literals. | `■ PASS` | `2026-03-27` | Covers config-writing logic in batch.py without running PhyloAcc. |
-| `tests/test_interface.py` | Integration | Summarize-only interface execution on minimal synthetic data | `tests/data/minimal/aln.fa`, `tests/data/minimal/bed.bed`, `tests/data/minimal/model.mod` | These minimal files are hand-written synthetic fixtures in `tests/data/minimal/`. | `■ PASS` | `2026-03-27` | Exercises Python entrypoint without a full workflow run. |
-| `tests/test_st_gt.py` | Integration + golden | ST execution on minimal data and GT execution against the ratite subset, both compared to goldens | ST: `tests/data/minimal/*`; GT: ratite subset from `../PhyloAcc-test-data/` plus `tests/golden/minimal/*` | Minimal ST fixtures are hand-written; GT uses a subset selected from the external test-data repo and recorded goldens. | `■ PASS` | `2026-03-27` | Requires PHYLOACC_RUN_GT=1 for GT coverage. |
+| `tests/test_interface.py` | Integration | Summarize-only interface execution on minimal synthetic data | `tests/data/minimal/aln.fa`, `tests/data/minimal/bed.bed`, `tests/data/minimal/model.mod` | These minimal files are hand-written synthetic fixtures in `tests/data/minimal/`. | `■ PASS` | `2026-03-30` | Exercises Python entrypoint without a full workflow run. |
+| `tests/test_st_gt.py` | Integration + golden | ST execution on minimal data and GT execution against the ratite subset, both compared to goldens | ST: `tests/data/minimal/*`; GT: ratite subset from `../PhyloAcc-test-data/` plus `tests/golden/minimal/*` | Minimal ST fixtures are hand-written; GT uses a subset selected from the external test-data repo and recorded goldens. | `■ PASS` | `2026-03-30` | Requires PHYLOACC_RUN_GT=1 for GT coverage. |
 | `tests/test_optional_testdata.py` | Optional integration + golden | Interface summarize and ST golden comparison using ../PhyloAcc-test-data | `../PhyloAcc-test-data/bioconda-test-data/*` plus `tests/golden/testdata/st_rate_postZ_M0.txt` | This data comes from the external `PhyloAcc-test-data` repo; the test subsets loci via `id-subset.txt`. | `■ PASS` | `2026-03-27` | Requires PHYLOACC_RUN_TESTDATA=1. |
 | `tests/test_cpp_unit.py` | Pytest wrapper | Runs lightweight C++ unit binaries and failure-path wrappers | Minimal fixtures in `tests/data/minimal/` plus wrapper-generated temp malformed files | The wrappers use hand-written minimal fixtures and create malformed FASTA/BED inputs on the fly when needed. | `■ PASS` | `2026-03-27` | This is the Python harness for the C++ sanity binaries. |
 | `tests/cpp/test_st_main.cpp` | C++ unit binary | ST tree/profile parse sanity on minimal data | `tests/data/minimal/model.mod`, `tests/data/minimal/aln.fa`, `tests/data/minimal/bed.bed` | All of these are hand-written synthetic fixtures under `tests/data/minimal/`. | `■ PASS` | `2026-03-27` | Observed via tests/test_cpp_unit.py. |
