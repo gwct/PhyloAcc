@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include "../../src/PhyloAcc-GT/profile.h"
+#include "../../src/PhyloAcc-common/profile.h"
 
 int main() {
     if (std::getenv("EXPECT_FAIL") == nullptr) {

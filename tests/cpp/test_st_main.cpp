@@ -3,8 +3,8 @@
 #include <iostream>
 #include <string>
 
-#include "../../src/PhyloAcc-ST/newick.h"
-#include "../../src/PhyloAcc-ST/profile.h"
+#include "../../src/PhyloAcc-common/newick.h"
+#include "../../src/PhyloAcc-common/profile.h"
 
 static void test_load_tree_minimal() {
     std::string mod_path = "tests/data/minimal/model.mod";

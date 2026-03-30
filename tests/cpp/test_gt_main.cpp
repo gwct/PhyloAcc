@@ -4,7 +4,7 @@
 #include <string>
 
 #include "../../src/PhyloAcc-GT/newick2.h"
-#include "../../src/PhyloAcc-GT/profile.h"
+#include "../../src/PhyloAcc-common/profile.h"
 
 static void test_load_coal_tree_minimal() {
     std::string tree_path = "tests/data/minimal/tree_coal.tre";

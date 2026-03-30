@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 
-#include "../../src/PhyloAcc-ST/newick.h"
+#include "../../src/PhyloAcc-common/newick.h"
 
 int main() {
     if (std::getenv("EXPECT_FAIL") == nullptr) {

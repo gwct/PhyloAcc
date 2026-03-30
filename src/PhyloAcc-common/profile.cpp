@@ -1,6 +1,7 @@
 #include "profile.h"
 #include "utils.h"
 
+#include <cassert>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -10,13 +11,14 @@ using namespace std;
 PhyloProf LoadPhyloProfiles(string profile_path, string segment_path, string segment_ID)
 {
     PhyloProf prof;
+    prof.G = 0;
     string linestr;
 
     ifstream in_prof(profile_path.c_str());
 
     if (!in_prof)
     {
-        cerr << "(Error. Cannot open the profile input file: " << profile_path << ")" << endl;
+        cerr << "(Error. Cannot open the phylogenetic profile input file: " << profile_path << ")" << endl;
         exit(1);
     }
 
@@ -30,12 +32,15 @@ PhyloProf LoadPhyloProfiles(string profile_path, string segment_path, string seg
             string tmp = strutils::trim(linestr.substr(1));
             prof.species_names.push_back(tmp);
 
-            if (wholeline != "")
+            if (prof.G == 0)
+                prof.G = wholeline.length();
+            else
+                assert(wholeline.length() == prof.G);
+
+            if (prof.G > 0)
             {
                 wholeline = strutils::ToLowerCase(wholeline);
                 prof.X.push_back(wholeline);
-                if (prof.G == 0)
-                    prof.G = wholeline.length();
             }
             wholeline = "";
         }
@@ -44,6 +49,8 @@ PhyloProf LoadPhyloProfiles(string profile_path, string segment_path, string seg
             wholeline += strutils::trim(linestr);
         }
     }
+    if (prof.G == 0)
+        prof.G = wholeline.length();
     wholeline = strutils::ToLowerCase(wholeline);
     prof.X.push_back(wholeline);
 
