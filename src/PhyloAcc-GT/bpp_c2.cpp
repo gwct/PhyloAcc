@@ -8,6 +8,7 @@
 
 #include "bpp_c.hpp"
 #include "bpp.hpp"
+#include "../PhyloAcc-common/bpp_active_output.h"
 #include "../PhyloAcc-common/bpp_output.h"
 
 struct Cmp2
@@ -24,34 +25,12 @@ struct Cmp2
 
 void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ)
 {
-
-    string outpath_lik = phyloacc::MakeTracePath(output_path2, resZ, CC);
-    ofstream out_lik;
-    out_lik.precision(8);
-
 #pragma omp critical
     {
-        if (iter == 0)
-        {
-            out_lik.open(outpath_lik.c_str());
-            out_lik << "iter\tloglik\tindicator\trate_n\trate_c\tpi_A\tGTtop\t";
-            phyloacc::WriteNodeHeader(out_lik, bpp.nodes_names);
-            out_lik<<"grate\tlrate";
-            out_lik << endl;
-        }
-        else
-        {
-            out_lik.open(outpath_lik.c_str(), ios::app);
-        }
-
-        for (int i = 0; i < num_mcmc + num_burn; i++)
-        {
-            out_lik << iter << "\t" << trace_loglik[i] << "\t" << trace_indicator[i] << "\t" << trace_n_rate[i] << "\t" << trace_c_rate[i] << "\t" << trace_pi[i][0] << "\t" <<trace_GTtopChg[i] << "\t";
-            phyloacc::WriteZTraceRow(out_lik, trace_Z[i]);
-            out_lik <<trace_g_rate[i]<<"\t"<<trace_l_rate[i] <<"\t" << trace_l2_rate[i] << endl;
-        }
-
-        out_lik.close();
+        phyloacc::WriteGTTraceFile(iter, output_path2, resZ, CC, num_burn, num_mcmc,
+                                   bpp.nodes_names, trace_loglik, trace_indicator,
+                                   trace_n_rate, trace_c_rate, trace_pi, trace_GTtopChg,
+                                   trace_g_rate, trace_l_rate, trace_l2_rate, trace_Z);
     }
 }
 

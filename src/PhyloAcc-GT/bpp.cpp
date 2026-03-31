@@ -35,6 +35,7 @@
 #include "../PhyloAcc-common/bpp_tree.h"
 #include "../PhyloAcc-common/bpp_likelihood.h"
 #include "../PhyloAcc-common/bpp_init.h"
+#include "../PhyloAcc-common/bpp_active_output.h"
 #include "bpp_c.hpp"
 
 
@@ -194,50 +195,9 @@ void BPP::getSubtree(int root, set<int>& child, vector<int> & visited_init)
 }
 
 void BPP::Output_init(PhyloProf & prof, string output_path, vector<int> & ids){
-
-        string outpath_elem = output_path+ "_elem_lik.txt";
-        ofstream out_lik(outpath_elem.c_str());
-        out_lik.precision(8);
-
-        //out_lik<<"No.\tID\tloglik_Null_W\tloglik_Acc_W\tloglik_Full_W\tlogBF1\tlogBF2\tlogPost_Max_M0\tlogPost_Max_M1\tlogPost_Max_M2\n";
-        out_lik<<"No.\tID\tloglik_Null_W\tloglik_Acc_W\tloglik_Full_W\tlogBF1\tlogBF2"<<endl;
-        for(vector<int>::iterator it = ids.begin(); it !=ids.end(); it++)
-        {
-            int cc = *it;
-            out_lik <<cc << "\t" << prof.element_names[cc] << "\t" << log_liks_WL[0][cc] <<"\t"<< log_liks_WL[2][cc] <<"\t"<< log_liks_WL[1][cc] <<"\t";
-            out_lik<<log_liks_WL[2][cc]-log_liks_WL[0][cc]<<"\t"<<log_liks_WL[2][cc]-log_liks_WL[1][cc]<<endl;
-            //out_lik <<log_liks_Z[0][cc] << "\t" <<log_liks_Z[2][cc]<<"\t" <<log_liks_Z[1][cc]<<"\t";
-            //out_lik<<log_mle[0][cc]<<"\t"<<log_mle[2][cc]<<"\t"<<log_mle[1][cc]<<"\t"<<log_mle[2][cc]-log_mle[0][cc]<<"\t"<<log_mle[2][cc]-log_mle[1][cc];
-            //out_lik << endl;
-        }
-
-        out_lik.close();
-
+    phyloacc::WriteGTElemLikelihoodFile(output_path, prof.element_names, ids, log_liks_WL);
     phyloacc::WriteElemZFiles(output_path, N, nodes_names, ids, Max_Z, &genetrees);
-
-    ofstream out_pi;    
-    for(int r=0; r<3;r++){
-        if(r==0){
-            outpath_elem=output_path+"_M"+to_string(0)+"_Beta_Post_pi_mode.txt";
-        }else if(r==2){
-            outpath_elem=output_path+"_M"+to_string(1)+"_Beta_Post_pi_mode.txt";
-        }else{
-            outpath_elem=output_path+"_M"+to_string(2)+"_Beta_Post_pi_mode.txt";
-        }
-        out_pi.open(outpath_elem.c_str());
-
-        for(vector<int>:: iterator it = ids.begin(); it !=ids.end(); it++)
-        {
-            int c=*it;
-            out_pi << c;
-            for(int b=0; b<4; b++) {//4 or num_base
-                out_pi<<"\t"<<cur_pi[r][c][b];
-            }
-            out_pi <<endl;
-        }
-        out_pi.close();
-    }
-
+    phyloacc::WriteGTPiModeFiles(output_path, ids, cur_pi);
 }
 
 

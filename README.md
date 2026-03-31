@@ -44,7 +44,10 @@ conda run -n phyloacc-test make -B \
 ```
 
 - `src/PhyloAcc-common/` is now the active shared implementation path for common parsing and helper code.
-- The duplicate `profile.*`, `newick.*`, and `utils.*` files still present under `src/PhyloAcc-ST/` and `src/PhyloAcc-GT/` are legacy, not part of the current build, and should not be edited as if they were active sources.
+- The intentionally local code boundary is now the active inference layer:
+  - GT-specific machinery such as `genetree.*` and `newick2.*`
+  - ST/GT-specific parts of `bpp.*`, `bpp_c.*`, and `bpp_c2.cpp` where further unification would require algorithmic or numerical-semantic changes
+- Shared parsing, profile loading, tree loading, utility code, and shared output/helper scaffolding should live in `src/PhyloAcc-common/`.
 
 # Usage
 

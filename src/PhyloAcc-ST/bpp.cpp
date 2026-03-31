@@ -36,6 +36,7 @@
 #include "../PhyloAcc-common/bpp_tree.h"
 #include "../PhyloAcc-common/bpp_likelihood.h"
 #include "../PhyloAcc-common/bpp_init.h"
+#include "../PhyloAcc-common/bpp_active_output.h"
 #include "bpp_c.hpp"
 
 
@@ -169,27 +170,8 @@ void BPP::getSubtree(int root, set<int>& child, vector<int> & visited_init)
 }
 
 void BPP::Output_init(PhyloProf & prof, string output_path, vector<int> & ids){
-    
-        string outpath_elem = output_path+ "_elem_lik.txt";
-        ofstream out_lik(outpath_elem.c_str());
-        out_lik.precision(8);
-        out_lik << "No.\tID\tloglik_Null\tloglik_Acc\tloglik_Full\tlogBF1\tlogBF2\tloglik_Max_M0\tloglik_Max_M1\tloglik_Max_M2"<<endl;
-        //for(int cc=0; cc<C;cc++)
-        for(vector<int>::iterator it = ids.begin(); it !=ids.end(); it++)
-        {
-            int cc = *it;
-            out_lik <<cc << "\t" << prof.element_names[cc] << "\t" << log_liks_null[cc] <<"\t"  <<log_liks_resZ[cc] <<"\t"  <<log_liks_sgl[cc]<< "\t";
-            out_lik << log_liks_resZ[cc] -  log_liks_null[cc] << "\t" << log_liks_resZ[cc] -  log_liks_sgl[cc];
-            //for(int r=0;r<3;r++) 
-            out_lik <<"\t" <<log_liks_Z[0][cc] << "\t" <<log_liks_Z[2][cc]<<"\t" <<log_liks_Z[1][cc];
-            out_lik << endl;
-        }
-        
-        out_lik.close();
-        
+    phyloacc::WriteSTElemLikelihoodFile(output_path, prof.element_names, ids, log_liks_null, log_liks_resZ, log_liks_sgl, log_liks_Z);
     phyloacc::WriteElemZFiles(output_path, N, nodes_names, ids, Max_Z);
-    
-    
 }
 
 

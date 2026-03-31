@@ -8,6 +8,7 @@
 
 #include "bpp_c.hpp"
 #include "bpp.hpp"
+#include "../PhyloAcc-common/bpp_active_output.h"
 #include "../PhyloAcc-common/bpp_output.h"
 
 
@@ -704,31 +705,11 @@ void BPP_C::log_f_Z(vector<int>& Z, vector<mat> & log_Int, double & MH_ratio_g, 
 
 
 void BPP_C::Output_sampling(int iter, string output_path2, BPP &bpp, int resZ){
-    
-    string outpath_lik = phyloacc::MakeTracePath(output_path2, resZ, CC);
-    ofstream out_lik;
-    out_lik.precision(8);
-    
     #pragma omp critical
     {
-      if(iter ==0)
-      {
-        out_lik.open(outpath_lik.c_str());
-        out_lik << "loglik\trate_n\trate_c\tgrate\tlrate\tlrate2\t";
-        phyloacc::WriteNodeHeader(out_lik, bpp.nodes_names);
-        out_lik <<endl;
-      }else{
-        out_lik.open(outpath_lik.c_str(), ios::app);
-      }
-        
-      for(std::size_t i=0; i< trace_loglik.size();i++)
-        {
-            out_lik<<trace_loglik[i]<<"\t"<<trace_n_rate[i] << "\t"<<trace_c_rate[i]<<"\t"<<trace_g_rate[i]<<"\t"<<trace_l_rate[i]<<"\t"<<trace_l2_rate[i]<<"\t";
-            phyloacc::WriteZTraceRow(out_lik, trace_Z[i]);
-            out_lik <<endl;
-        }
-    
-    out_lik.close();
+        phyloacc::WriteSTTraceFile(iter, output_path2, resZ, CC, bpp.nodes_names,
+                                   trace_loglik, trace_n_rate, trace_c_rate,
+                                   trace_g_rate, trace_l_rate, trace_l2_rate, trace_Z);
     }
 }
 
@@ -749,7 +730,6 @@ void BPP_C::Output_init(string output_path,string output_path2, BPP &bpp, ofstre
         phyloacc::WriteInitSummaryRow(out_Z, CC, n_rate, c_rate, g_rate, l_rate, l2_rate, countZ, num_mcmc);
     }
 }
-
 
 
 
