@@ -352,12 +352,18 @@ def getBFs(globs):
     bf_lists = { bf_type : [] for bf_type in bf_types };
 
     for locus in globs['all-loci']:
+        locus_bfs = {};
         for bf_type in bf_types:
             bf = float(globs['locus-stats']['elem_lik'][locus][bf_type]);
             if math.isinf(bf):
                 print("WARNING: " + bf_type + " for locus " + locus + " is infinite. This locus may have failed to converge for this model. Excluding from plots...");
+                locus_bfs[bf_type] = "NA";
             else:
-                bf_lists[bf_type].append(bf);
+                locus_bfs[bf_type] = bf;
+        
+        if "NA" not in locus_bfs.values():
+            for bf_type in bf_types:
+                bf_lists[bf_type].append(locus_bfs[bf_type]);
 
     return tuple(bf_lists[bf_type] for bf_type in bf_types)
 
