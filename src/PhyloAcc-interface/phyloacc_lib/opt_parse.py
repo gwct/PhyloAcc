@@ -276,6 +276,9 @@ def optParse(globs):
         "Reads the tree from the input mod file (-m), labels the internal nodes, and exits."));        
     #parser.add_argument("--labeltree", dest="labeltree", help="Simply reads the tree from the input mod file (-m), labels the internal nodes, and exits.", action="store_true", default=False);
     
+    arg_flags.update(addArgument(parser, "--labelmod", "labelmod", bool,
+        "Reads the tree from the input mod file (-m), labels the internal nodes with ancestors, re-writes the mod file, and uses that for the analysis."));        
+
     arg_flags.update(addArgument(parser, "--overwrite", "overwrite_flag", bool,
         "Set this to overwrite existing files."));       
     #parser.add_argument("--overwrite", dest="overwrite_flag", help="Set this to overwrite existing files.", action="store_true", default=False);
@@ -439,6 +442,9 @@ def optParse(globs):
     #globs['label-tree'] = args.labeltree;
     globs['label-tree'] = getOpt(args.labeltree, "labeltree", bool, globs['label-tree'], config, arg_flags, globs);
     # Parse the --labeltree option
+
+    globs['label-mod'] = getOpt(args.labeltree, "labelmod", bool, globs['label-mod'], config, arg_flags, globs);
+    # Parse the --labeltree option    
 
     globs['test-cmd-flag'] = getOpt(args.test_cmd_flag, "test_cmd_flag", bool, False, config, arg_flags, globs);
     # Parse the --testcmd option
@@ -693,6 +699,10 @@ def optParse(globs):
                 logfile.close();
             # Prep the logfile to be overwritten
 
+            if globs['label-mod']:
+                base, ext = os.path.splitext(os.path.basename(globs['mod-file']));
+                globs['label-mod'] = os.path.join(globs['job-dir'], base + ".LABELED" + ext);
+
             ## Output files and directories
             ####################
 
@@ -823,6 +833,9 @@ def startProg(globs):
 
     PC.printWrite(globs['logfilename'], globs['log-v'], PC.spacedOut("# Tree/rate file (mod file from phyloFit):", pad) + globs['mod-file']);
     #PC.printWrite(globs['logfilename'], globs['log-v'], PC.spacedOut("# Tree read from mod file:", pad) + globs['tree-string']);
+
+    if globs['label-mod']:
+        PC.printWrite(globs['logfilename'], globs['log-v'], PC.spacedOut("# Labeling tree in mod file:", pad) + globs['label-mod']);
 
     if globs['debug-tree']:
         print("\n--debugtree SET. READING TREE AND EXITING.\n");

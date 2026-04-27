@@ -83,6 +83,14 @@ if __name__ == '__main__':
             #print(globs['labeled-tree']);
             #print();
             sys.exit(0);
+        elif globs['label-mod']:
+            PC.printWrite(globs['logfilename'], globs['log-v'], PC.spacedOut("# Labelling tree and re-writing mod file:", 45) + globs['label-mod']);
+            desc_st = globs['st'].labelDesc();
+            mod_text = open(globs['mod-file']).read().replace(globs['tree-string'], desc_st);
+            with open(globs['label-mod'], 'w') as label_mod_stream:
+                label_mod_stream.write(mod_text);
+            globs['mod-file'] = globs['label-mod'];
+            globs['tree-string'], globs['st'] = TREEIO.readST(globs);      
         elif not globs['st'].has_label:
             PC.errorOut("MAIN2", "One or more internal nodes in your tree are unlabeled, which is required for PhyloAcc. Please label all internal nodes (maybe with the --labeltree option) and replace the tree in your .mod file with the labeled tree.", globs);
 
