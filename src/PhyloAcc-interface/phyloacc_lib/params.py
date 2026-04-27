@@ -48,6 +48,9 @@ def init():
         'mod-file' : False,
         # Input rate and tree file from PHAST
 
+        'label-mod' : False,
+        # Option to label the mod file tree and use that for the analysis
+
         'seq-compression' : 'none',
         'bed-compression' : 'none',
         # The type of compression used for input sequence files
