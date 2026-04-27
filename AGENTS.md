@@ -15,6 +15,8 @@
 - Only run commands or modify files within the project directory, and never ever run commands or modify files in parent directories or other locations on the filesystem.
 - Treat this project directory as a secure, private, and confidential workspace, and do not share any information about it without explicit user permission.
 - Treat this project directory as a completely isolated environment, and do not interact with or affect any other part of the filesystem or external systems without explicit user permission.
+- If you ever need to create diagnostic scripts or files that are used only by the LLM and not meant for the user, place them in a `.llm-tmp/` dir so they are not cluttering the project directories.
+- If `.llm-tmp/` is ever needed and does not exist, create it. If the project is a git repository, also add `.llm-tmp/` to `.gitignore`.
 
 ## Environment
 
@@ -72,6 +74,7 @@ Ask for permission:
 
 ## Coding rules
 
+- Never modify scripts or parts of scripts that are not related to the user's request.
 - Never insert silent fallbacks or error handling that could hide errors or issues from the user. Always be transparent about any errors or issues that occur, and do not attempt to handle them without user knowledge and permission.
 - Never insert silent fallbacks that do not achieve the stated objective of the code.
 - Never hide errors in scripts or workflows. If there is an error the script should fail. Errors are useful and necessary information so it is counterproductive to hide them.
@@ -79,12 +82,6 @@ Ask for permission:
 ## Data analysis rules
 
 - Never modify notebooks or parts of notebooks that are not related to the user's request.
-- Notebooks should contain sections the clearly define all filtering, assumptions, and definitions of terms relevant for understanding the results of the analysis.
-- Always be explicit about how data is categorized/binned/clustered by adding text to the notebook or plot. This text should both be plain for interpretation and technical to understand the underlying code.
-- Accompanying every plot or analysis should be plain text that aids in the interpretation of said plot or analysis.
-
-## Data analysis rules
-
 - Notebooks should contain sections the clearly define all filtering, assumptions, and definitions of terms relevant for understanding the results of the analysis.
 - Always be explicit about how data is categorized/binned/clustered by adding text to the notebook or plot. This text should both be plain for interpretation and technical to understand the underlying code.
 - Accompanying every plot or analysis should be plain text that aids in the interpretation of said plot or analysis.

@@ -8,6 +8,7 @@ src/PhyloAcc-interface/*.errlog
 src/PhyloAcc-interface/tests/
 support/
 bin/
+old-bin/
 /PhyloAcc-ST
 /PhyloAcc-GT
 blah
@@ -18,6 +19,9 @@ build_st.sh
 .vscode
 phyloacc-dev*
 dev/phyloacc-dev*
+dev/artifacts/
+.codex
+tests/cpp/phyloacc_cpp_*
 *.errlog
 
 # Compiled source #
